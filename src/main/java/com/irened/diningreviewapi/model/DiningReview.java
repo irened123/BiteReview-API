@@ -1,6 +1,8 @@
 package com.irened.diningreviewapi.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,4 +31,7 @@ public class DiningReview {
     private Integer dairyScore;  // Optional dairy score (1-5)
 
     private String commentary;  // Optional commentary
+
+    @Enumerated(EnumType.STRING)
+    private ReviewStatus status = ReviewStatus.PENDING; // Default status
 }
