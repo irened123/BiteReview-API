@@ -1,6 +1,6 @@
 package com.irened.diningreviewapi.controller;
 
-import com.irened.diningreviewapi.model.Review;
+import com.irened.diningreviewapi.model.DiningReview;
 import com.irened.diningreviewapi.repository.ReviewRepository;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,12 +17,12 @@ public class ReviewController {
     }
 
     @PostMapping
-    public Review createReview(@RequestBody Review review) {
+    public DiningReview createReview(@RequestBody DiningReview review) {
         return reviewRepository.save(review);
     }
 
     @GetMapping
-    public List<Review> getAllReviews() {
+    public List<DiningReview> getAllReviews() {
         return reviewRepository.findAll();
     }
 }
