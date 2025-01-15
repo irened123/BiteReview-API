@@ -3,6 +3,7 @@ package com.irened.diningreviewapi.controller;
 import com.irened.diningreviewapi.model.AdminReviewAction;
 import com.irened.diningreviewapi.model.DiningReview;
 import com.irened.diningreviewapi.model.ReviewStatus;
+import com.irened.diningreviewapi.model.User;
 import com.irened.diningreviewapi.repository.DiningReviewRepository;
 import com.irened.diningreviewapi.repository.RestaurantRepository;
 import com.irened.diningreviewapi.repository.UserRepository;
@@ -11,7 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -22,25 +25,26 @@ public class AdminController {
     private final RestaurantRepository restaurantRepository;
     private final UserRepository userRepository;
     private static final DecimalFormat decimalFormat = new DecimalFormat("0.00");
-        private static final ReviewStatus PENDING = null;
-    
-        public AdminController(DiningReviewRepository diningReviewRepository,
-                               RestaurantRepository restaurantRepository,
-                               UserRepository userRepository) {
-            this.diningReviewRepository = diningReviewRepository;
-            this.restaurantRepository = restaurantRepository;
-            this.userRepository = userRepository;
-        }
-    
-        /**
-         * Fetch all dining reviews with a pending status.
-         *
-         * @return List of pending dining reviews.
-         */
-        @GetMapping("/reviews/pending")
-        public ResponseEntity<List<DiningReview>> getPendingReviews() {
-                    List<DiningReview> pendingReviews = diningReviewRepository.findAllByStatus(PENDING);
-        return new ResponseEntity<>(pendingReviews, HttpStatus.OK);
+
+    public AdminController(DiningReviewRepository diningReviewRepository,
+                           RestaurantRepository restaurantRepository,
+                           UserRepository userRepository) {
+        this.diningReviewRepository = diningReviewRepository;
+        this.restaurantRepository = restaurantRepository;
+        this.userRepository = userRepository;
+    }
+
+    /**
+     * Fetch all dining reviews with a pending status.
+     *
+     * @return List of pending dining reviews.
+     */
+    @GetMapping("/reviews/pending")
+    public ResponseEntity<Map<String, Object>> getPendingReviews() {  
+        List<DiningReview> pendingReviews = diningReviewRepository.findAllByStatus(ReviewStatus.PENDING);
+        Map<String, Object> response = new HashMap<>();
+        response.put("pendingReviews", pendingReviews);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     /**
@@ -52,17 +56,18 @@ public class AdminController {
      * @return Response message indicating success or failure.
      */
     @PutMapping("/reviews/{id}")
-    public ResponseEntity<String> approveOrRejectReview(@PathVariable Long id, @RequestBody AdminReviewAction action) {
+    public ResponseEntity<Map<String, String>> approveOrRejectReview(@PathVariable Long id, @RequestBody AdminReviewAction action) {  
         Optional<DiningReview> optionalReview = diningReviewRepository.findById(id);
         if (optionalReview.isEmpty()) {
-            return new ResponseEntity<>("Review not found", HttpStatus.NOT_FOUND);
+            return createErrorResponse("Review not found", HttpStatus.NOT_FOUND);  
         }
 
         DiningReview review = optionalReview.get();
 
-        // Validate that the user associated with the review exists
-        if (userRepository.findById(review.getId()).isEmpty()) {
-            return new ResponseEntity<>("User not found for the review", HttpStatus.BAD_REQUEST);
+        // Validate that the user associated with the review exists by display name
+        Optional<User> optionalUser = userRepository.findByDisplayName(review.getDisplayName());
+        if (optionalUser.isEmpty()) {
+            return createErrorResponse("User not found for the review", HttpStatus.BAD_REQUEST);  
         }
 
         // Determine review status based on admin action
@@ -75,7 +80,9 @@ public class AdminController {
             recomputeRestaurantScores(review.getRestaurantId());
         }
 
-        return new ResponseEntity<>("Review status updated successfully", HttpStatus.OK);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Review status updated successfully");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     /**
@@ -106,7 +113,7 @@ public class AdminController {
         double averagePeanutScore = totalPeanutScore / reviewCount;
         double averageDairyScore = totalDairyScore / reviewCount;
         double averageEggScore = totalEggScore / reviewCount;
-        double averageOverallScore = totalOverallScore / reviewCount;
+        double averageOverallScore = totalOverallScore / 3;
 
         // Update restaurant scores
         restaurantRepository.findById(restaurantId).ifPresent(restaurant -> {
@@ -116,5 +123,18 @@ public class AdminController {
             restaurant.setOverallScore(Double.parseDouble(decimalFormat.format(averageOverallScore)));
             restaurantRepository.save(restaurant);
         });
+    }
+
+    /**
+     * Helper method to create a JSON error response.
+     *
+     * @param message The error message.
+     * @param status  The HTTP status.
+     * @return ResponseEntity containing the error message and status.
+     */
+    private ResponseEntity<Map<String, String>> createErrorResponse(String message, HttpStatus status) {  
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("error", message);
+        return new ResponseEntity<>(errorResponse, status);
     }
 }

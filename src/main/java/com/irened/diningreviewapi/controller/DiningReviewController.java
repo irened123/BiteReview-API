@@ -6,21 +6,24 @@ import com.irened.diningreviewapi.repository.DiningReviewRepository;
 import com.irened.diningreviewapi.repository.RestaurantRepository;
 import com.irened.diningreviewapi.repository.UserRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Optional;
+import java.util.*;
 
 @RestController
-@RequestMapping("/reviews")
+@RequestMapping("/api/reviews")
 public class DiningReviewController {
 
     private final DiningReviewRepository diningReviewRepository;
     private final RestaurantRepository restaurantRepository;
     private final UserRepository userRepository;
 
-    public DiningReviewController(DiningReviewRepository diningReviewRepository, RestaurantRepository restaurantRepository, UserRepository userRepository) {
+    public DiningReviewController(DiningReviewRepository diningReviewRepository, 
+                                  RestaurantRepository restaurantRepository, 
+                                  UserRepository userRepository) {
         this.diningReviewRepository = diningReviewRepository;
         this.restaurantRepository = restaurantRepository;
         this.userRepository = userRepository;
@@ -31,10 +34,10 @@ public class DiningReviewController {
      * The review is initially set to a pending status.
      *
      * @param diningReview The dining review to be submitted.
+     * @return A JSON response indicating successful submission.
      */
     @PostMapping
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void submitReview(@RequestBody DiningReview diningReview) {
+    public ResponseEntity<Map<String, String>> submitReview(@RequestBody DiningReview diningReview) {
         validateDiningReview(diningReview);
 
         Optional<?> restaurant = restaurantRepository.findById(diningReview.getRestaurantId());
@@ -44,6 +47,10 @@ public class DiningReviewController {
 
         diningReview.setStatus(ReviewStatus.PENDING);
         diningReviewRepository.save(diningReview);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Review submitted successfully");
+        return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
     /**
@@ -53,10 +60,10 @@ public class DiningReviewController {
      * @return The dining review with the given ID.
      */
     @GetMapping("/{id}")
-    public DiningReview getReview(@PathVariable Long id) {
+    public ResponseEntity<DiningReview> getReview(@PathVariable Long id) {
         Optional<DiningReview> review = diningReviewRepository.findById(id);
         if (review.isPresent()) {
-            return review.get();
+            return new ResponseEntity<>(review.get(), HttpStatus.OK);
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Review not found.");
     }
@@ -66,10 +73,10 @@ public class DiningReviewController {
      *
      * @param id     ID of the dining review.
      * @param status New status to be set for the review.
+     * @return A JSON response indicating the status update.
      */
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateReviewStatus(@PathVariable Long id, @RequestParam String status) {
+    public ResponseEntity<Map<String, String>> updateReviewStatus(@PathVariable Long id, @RequestParam String status) {
         Optional<DiningReview> optionalReview = diningReviewRepository.findById(id);
         if (optionalReview.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Review not found.");
@@ -84,18 +91,36 @@ public class DiningReviewController {
         } catch (IllegalArgumentException ex) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid review status.");
         }
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Review status updated successfully");
+        return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
     }
 
     /**
      * Retrieve all reviews for a specific restaurant by its ID and status.
      *
      * @param restaurantId ID of the restaurant.
-     * @param status       Status of the reviews to retrieve.
-     * @return List of dining reviews matching the criteria.
+     * @param status       Status of the reviews to retrieve (optional).
+     * @return A list of dining reviews matching the criteria.
      */
     @GetMapping("/restaurant/{restaurantId}")
-    public Iterable<DiningReview> getReviewsByRestaurant(@PathVariable Long restaurantId, @RequestParam ReviewStatus status) {
-        return diningReviewRepository.findByRestaurantIdAndStatus(restaurantId, status);
+    public ResponseEntity<List<DiningReview>> getReviewsByRestaurant(@PathVariable Long restaurantId, 
+                                                                     @RequestParam(required = false) String status) {
+        List<DiningReview> reviews;
+
+        if (status == null) {
+            reviews = diningReviewRepository.findByRestaurantId(restaurantId);
+        } else {
+            try {
+                ReviewStatus reviewStatus = ReviewStatus.valueOf(status.toUpperCase());
+                reviews = diningReviewRepository.findByRestaurantIdAndStatus(restaurantId, reviewStatus);
+            } catch (IllegalArgumentException ex) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid review status.");
+            }
+        }
+
+        return new ResponseEntity<>(reviews, HttpStatus.OK);
     }
 
     /**

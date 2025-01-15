@@ -12,4 +12,8 @@ public interface DiningReviewRepository extends CrudRepository<DiningReview, Lon
 
     // Fetch all reviews by status
     List<DiningReview> findAllByStatus(ReviewStatus status);
+
+    // Fetch all reviews by restaurant ID without filtering by status
+    List<DiningReview> findByRestaurantId(Long restaurantId);
 }
+

@@ -8,6 +8,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -27,13 +29,16 @@ public class RestaurantController {
      * If a restaurant with the same name and zip code already exists, the request will fail.
      *
      * @param restaurant The restaurant to be added.
-     * @return A response indicating the restaurant was successfully added.
+     * @return JSON response indicating success or failure.
      */
     @PostMapping
-    public ResponseEntity<String> addRestaurant(@RequestBody Restaurant restaurant) {
+    public ResponseEntity<Map<String, String>> addRestaurant(@RequestBody Restaurant restaurant) {  
         validateNewRestaurant(restaurant);
         restaurantRepository.save(restaurant);
-        return new ResponseEntity<>("Restaurant added successfully", HttpStatus.CREATED);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Restaurant added successfully");
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     /**
@@ -41,21 +46,22 @@ public class RestaurantController {
      * If the restaurant with the given ID is not found, a 404 error is returned.
      *
      * @param id The ID of the restaurant.
-     * @return The restaurant details.
+     * @return JSON response containing the restaurant details or an error message.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Restaurant> getRestaurant(@PathVariable Long id) {
+    public ResponseEntity<?> getRestaurant(@PathVariable Long id) {  
         Optional<Restaurant> restaurant = restaurantRepository.findById(id);
         if (restaurant.isPresent()) {
             return new ResponseEntity<>(restaurant.get(), HttpStatus.OK);
         }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Restaurant not found");
+
+        return createErrorResponse("Restaurant not found", HttpStatus.NOT_FOUND);  
     }
 
     /**
      * Retrieve all restaurants.
      *
-     * @return An iterable list of all restaurants.
+     * @return JSON response containing a list of all restaurants.
      */
     @GetMapping
     public ResponseEntity<Iterable<Restaurant>> getAllRestaurants() {
@@ -70,11 +76,11 @@ public class RestaurantController {
      *
      * @param zipcode The zip code to filter restaurants by.
      * @param allergy The allergy type to filter restaurants by (peanut, dairy, or egg).
-     * @return A list of restaurants matching the search criteria.
+     * @return JSON response containing a list of restaurants matching the criteria.
      */
     @GetMapping("/search")
-    public ResponseEntity<Iterable<Restaurant>> searchRestaurants(
-            @RequestParam String zipcode, @RequestParam String allergy) {
+    public ResponseEntity<?> searchRestaurants(
+            @RequestParam String zipcode, @RequestParam String allergy) {  
 
         validateZipCode(zipcode);
 
@@ -90,7 +96,7 @@ public class RestaurantController {
                 result = restaurantRepository.findByZipCodeAndEggScoreIsNotNullOrderByEggScoreDesc(zipcode);
                 break;
             default:
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid allergy type");
+                return createErrorResponse("Invalid allergy type", HttpStatus.BAD_REQUEST);  
         }
 
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -126,5 +132,18 @@ public class RestaurantController {
         if (!zipCodePattern.matcher(zipcode).matches()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid zip code format");
         }
+    }
+
+    /**
+     * Helper method to create a JSON error response.
+     *
+     * @param message The error message.
+     * @param status  The HTTP status.
+     * @return ResponseEntity containing the error message and status.
+     */
+    private ResponseEntity<Map<String, String>> createErrorResponse(String message, HttpStatus status) {  
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("error", message);
+        return new ResponseEntity<>(errorResponse, status);
     }
 }
