@@ -1,6 +1,6 @@
-package com.irened.diningreviewapi.repository;
+package com.irened.bitereviewapi.repository;
 
-import com.irened.diningreviewapi.model.User;
+import com.irened.bitereviewapi.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;

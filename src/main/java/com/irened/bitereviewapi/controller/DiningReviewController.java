@@ -1,15 +1,16 @@
-package com.irened.diningreviewapi.controller;
+package com.irened.bitereviewapi.controller;
 
-import com.irened.diningreviewapi.model.DiningReview;
-import com.irened.diningreviewapi.model.ReviewStatus;
-import com.irened.diningreviewapi.repository.DiningReviewRepository;
-import com.irened.diningreviewapi.repository.RestaurantRepository;
-import com.irened.diningreviewapi.repository.UserRepository;
+import com.irened.bitereviewapi.model.DiningReview;
+import com.irened.bitereviewapi.model.ReviewStatus;
+import com.irened.bitereviewapi.repository.DiningReviewRepository;
+import com.irened.bitereviewapi.repository.RestaurantRepository;
+import com.irened.bitereviewapi.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
 
 import java.util.*;
 

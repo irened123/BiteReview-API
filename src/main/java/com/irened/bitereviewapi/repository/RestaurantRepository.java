@@ -1,6 +1,6 @@
-package com.irened.diningreviewapi.repository;
+package com.irened.bitereviewapi.repository;
 
-import com.irened.diningreviewapi.model.Restaurant;
+import com.irened.bitereviewapi.model.Restaurant;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;

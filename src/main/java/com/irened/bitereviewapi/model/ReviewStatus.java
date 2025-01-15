@@ -1,4 +1,4 @@
-package com.irened.diningreviewapi.model;
+package com.irened.bitereviewapi.model;
 
 public enum ReviewStatus {
     PENDING,    // Initial status when submitted

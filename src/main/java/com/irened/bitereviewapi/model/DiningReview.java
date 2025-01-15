@@ -1,4 +1,4 @@
-package com.irened.diningreviewapi.model;
+package com.irened.bitereviewapi.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

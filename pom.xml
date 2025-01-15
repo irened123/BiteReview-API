@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.irened</groupId>
-	<artifactId>diningreviewapi</artifactId>
+	<artifactId>bitereviewapi</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>diningreviewapi</name>
-	<description>Demo project for Spring Boot</description>
+	<name>bitereviewapi</name>
+	<description>RESTful API project using Spring Boot</description>
 	<url/>
 	<licenses>
 		<license/>

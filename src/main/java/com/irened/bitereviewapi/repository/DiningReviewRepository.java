@@ -1,7 +1,7 @@
-package com.irened.diningreviewapi.repository;
+package com.irened.bitereviewapi.repository;
 
-import com.irened.diningreviewapi.model.DiningReview;
-import com.irened.diningreviewapi.model.ReviewStatus;
+import com.irened.bitereviewapi.model.DiningReview;
+import com.irened.bitereviewapi.model.ReviewStatus;
 import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 

@@ -1,7 +1,8 @@
-package com.irened.diningreviewapi.controller;
+package com.irened.bitereviewapi.controller;
 
-import com.irened.diningreviewapi.model.User;
-import com.irened.diningreviewapi.repository.UserRepository;
+
+import com.irened.bitereviewapi.model.User;
+import com.irened.bitereviewapi.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
