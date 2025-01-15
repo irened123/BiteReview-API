@@ -63,7 +63,7 @@ curl -X GET http://localhost:8080/api/admin/reviews/pending
 **Response:**
 
 ```json
-{"pendingReviews": [{"id": 1,"displayName": "john_doe","restaurantId": 1, "peanutScore": 4,"eggScore": 3,"dairyScore": 5,"commentary": "Great food!", "status":"PENDING"}]}
+{"pendingReviews": [{"id": 1, "displayName": "john_doe", "restaurantId": 1, "peanutScore": 4, "eggScore": 3, "dairyScore": 5, "commentary": "Great food!", "status":"PENDING"}]}
 ```
 
 ### 5. Approve a Dining Review
@@ -93,7 +93,7 @@ curl -X GET "http://localhost:8080/api/reviews/restaurant/1?status=APPROVED"
 **Response:**
 
 ```json
-[{"id": 1, "displayName":"john_doe", "restaurantId": 1, "peanutScore": 4,"eggScore": 3, "dairyScore": 5, "commentary": "Great food!", "status": "APPROVED"}]
+[{"id": 1, "displayName": "john_doe", "restaurantId": 1, "peanutScore": 4, "eggScore": 3, "dairyScore": 5, "commentary": "Great food!", "status": "APPROVED"}]
 ```
 
 ### 7. Update User Information
@@ -123,7 +123,7 @@ curl -X GET http://localhost:8080/api/users/john_doe
 **Response:**
 
 ```json
-{"displayName": "john_doe", "city": "Cambridge","state": "MA","zipCode": "02118"}
+{"displayName": "john_doe", "city": "Cambridge", "state": "MA", "zipCode": "02118"}
 ```
 
 ### 9. Search Restaurants by Zip Code and Allergy Score
@@ -137,7 +137,7 @@ curl -X GET "http://localhost:8080/api/restaurants/search?zipcode=02118&allergy=
 **Response:**
 
 ```json
-[{"id":1,"name":"Best Diner","zipCode":"02118","peanutScore":4.0,"eggScore":3.0,"dairyScore":5.0,"overallScore":4.0}]
+[{"id": 1, "name": "Best Diner", "zipCode": "02118", "peanutScore": 4.0, "eggScore": 3.0, "dairyScore": 5.0, "overallScore": 4.0}]
 ```
 
 ### 10. Reject a Dining Review
@@ -153,7 +153,7 @@ curl -X PUT http://localhost:8080/api/admin/reviews/1 \
 **Response:**
 
 ```json
-{"message":"Review status updated successfully"}
+{"message": "Review status updated successfully"}
 ```
 
 
