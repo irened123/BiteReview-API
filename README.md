@@ -22,7 +22,7 @@ The **BiteReview API** is a RESTful service designed to facilitate user interact
 
 ## Installation
 
-To set up the **BiteReview-API** on your local machine, ensure you have the following prerequisites:
+To set up the **BiteReview API** on your local machine, ensure you have the following prerequisites:
 
 - **Java 17** or higher
 - **Maven 3.x** or higher
