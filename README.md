@@ -10,7 +10,7 @@
 
 ## Introduction
 
-**BiteReview-API** is a RESTful service designed to facilitate user interactions with restaurant reviews. It allows users to create profiles, add restaurants, submit dining reviews, and manage user information. The API supports functionalities such as retrieving pending reviews, approving or rejecting reviews, and searching for restaurants based on zip code and allergy scores.
+The **BiteReview API** is a RESTful service designed to facilitate user interactions with restaurant reviews. It allows users to create profiles, add restaurants, submit dining reviews, and manage user information. The API supports functionalities such as retrieving pending reviews, approving or rejecting reviews, and searching for restaurants based on zip code and allergy scores.
 
 ## Features
 
@@ -53,7 +53,7 @@ The application will start on `http://localhost:8080`.
 
 ## API Testing with cURL
 
-Below are examples of how to interact with the **BiteReview-API** using cURL commands. For additional endpoints and detailed testing examples, please refer to the [API Testing with cURL](./docs/api-testing-curl.md) documentation.
+Below are examples of how to interact with the **BiteReview API** using cURL commands. For additional endpoints and detailed testing examples, please refer to the [API Testing with cURL](./docs/api-testing-curl.md) documentation.
 
 ### 1. Create a New User
 
