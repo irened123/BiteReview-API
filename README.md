@@ -53,7 +53,7 @@ The application will start on `http://localhost:8080`.
 
 ## API Testing with cURL
 
-Below are examples of how to interact with the **BiteReview-API** using cURL commands. For additional endpoints and detailed testing examples, please refer to the [API Testing with cURL] (./docs/api-testing-curl.md) documentation.
+Below are examples of how to interact with the **BiteReview-API** using cURL commands. For additional endpoints and detailed testing examples, please refer to the [API Testing with cURL](./docs/api-testing-curl.md) documentation.
 
 ### 1. Create a New User
 
@@ -98,5 +98,5 @@ curl -X POST http://localhost:8080/api/restaurants \
 
 ## Acknowledgements
 
-This project follows [Codecademy's Dining Review API assignment] (https://www.codecademy.com/projects/portfolio/dining-review-api), which provided valuable guidance and helped me strengthen my development skills.
+This project follows [Codecademy's Dining Review API assignment](https://www.codecademy.com/projects/portfolio/dining-review-api), which provided valuable guidance and helped me strengthen my development skills.
 
